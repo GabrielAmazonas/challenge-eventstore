@@ -3,7 +3,9 @@ package net.intelie.challenges;
 /**
  * An iterator over an event collection.
  */
-public interface EventIterator extends AutoCloseable {
+public interface EventIterator {
+	
+	
     /**
      * Move the iterator to the next event, if any.
      *
