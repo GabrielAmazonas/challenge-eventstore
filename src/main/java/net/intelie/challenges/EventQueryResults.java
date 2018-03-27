@@ -14,10 +14,10 @@ public class EventQueryResults implements EventIterator {
 
 	@Override
 	public boolean moveNext() {
-		if((currentEventKey + 1) >= queriedEventMap.size()) {
+		if((currentEventKey + 1) > queriedEventMap.size()) {
 			return false;
 		} else {
-			currentEventKey++;
+			currentEventKey = queriedEventMap.keys().nextElement();
 			return true;
 		}
 			
@@ -28,6 +28,8 @@ public class EventQueryResults implements EventIterator {
 		if(currentEventKey == 0) {
 			throw new IllegalStateException("moveNext() method not executed yet.");
 		}
+		
+		//We need to check the content to see wich is the first key
 		
 		return queriedEventMap.get(currentEventKey);
 	}
