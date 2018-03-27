@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 public class EventMap implements EventStore {
 
-	private final ConcurrentHashMap<Long, Event> concurrentEventMap = new ConcurrentHashMap<Long, Event>();
+	private ConcurrentHashMap<Long, Event> concurrentEventMap = new ConcurrentHashMap<Long, Event>();
 	private final AtomicLong eventKeyGenerator = new AtomicLong();
 
 	@Override
@@ -17,7 +17,17 @@ public class EventMap implements EventStore {
 
 	@Override
 	public void removeAll(String type) {
+
+		//First, query the EventMap, searching for the Events with different types
+        Map<Long, Event> queryResult = concurrentEventMap.entrySet().stream()
+                .filter(event -> !type.equals(event.getValue().getType()))
+                .collect(Collectors.toConcurrentMap(x -> x.getKey(), x -> x.getValue()));
+
+        //Clearing the map for safety;
 		concurrentEventMap.clear();
+
+		//Setting the memory map to the filtered map:
+        concurrentEventMap = new ConcurrentHashMap<Long, Event>(queryResult);
 	}
 
 	@Override
